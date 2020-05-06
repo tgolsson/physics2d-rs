@@ -1,6 +1,4 @@
-use world::{World};
-use ::math::{Vec2};
-use collision::Contact;
+use crate::{collision::Contact, world::World};
 
 pub trait DebugCollision {
     fn contacts(&self) -> Vec<&Contact>;

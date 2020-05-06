@@ -1,10 +1,12 @@
-mod vec2;
-mod mat2;
 mod bounds;
+mod mat2;
+mod vec2;
 
-pub use self::vec2::{Vec2, Cross};
-pub use self::mat2::Mat2;
-pub use self::bounds::Bounds;
+pub use self::{
+    bounds::Bounds,
+    mat2::Mat2,
+    vec2::{Cross, Vec2},
+};
 
 use std::f32;
 
@@ -53,4 +55,3 @@ pub fn clamp(x: f32, min: f32, max: f32) -> f32 {
 pub fn clamp01(x: f32) -> f32 {
     clamp(x, 0.0, 1.0)
 }
-

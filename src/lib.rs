@@ -1,20 +1,13 @@
-extern crate fnv;
-
-#[macro_use]
-mod util;
-
-#[macro_use]
-pub mod shapes;
-
-pub mod math;
-
 mod collision;
 mod constraint;
-mod world;
 mod joint;
+pub mod math;
+pub mod shapes;
+mod util;
+mod world;
 
 pub use world::debug;
 
-pub use math::{Vec2, Mat2, Cross, Bounds};
-pub use world::{World, Body, BodyId, Material, Transform};
 pub use joint::{Joint, SpringJoint};
+pub use math::{Bounds, Cross, Mat2, Vec2};
+pub use world::{Body, BodyId, Material, Transform, World};

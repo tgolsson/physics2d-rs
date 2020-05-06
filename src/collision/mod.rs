@@ -1,17 +1,17 @@
 pub mod broad_phase;
-
 mod narrow_phase;
 mod solver;
 
-pub use self::narrow_phase::{Collide, collide};
-pub use self::solver::{ContactConstraint};
-use math::{Vec2, Cross};
+pub use narrow_phase::{collide, Collide};
+pub use solver::ContactConstraint;
+
+use crate::math::{Cross, Vec2};
 
 #[derive(Copy, Clone)]
 pub struct Contact {
     pub position: Vec2,
     pub penetration: f32,
-    
+
     pub normal: Vec2,
     pub tangent: Vec2,
 }

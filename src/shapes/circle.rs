@@ -1,7 +1,8 @@
-use math::{PI, Vec2};
-use math::Bounds;
-use world::Transform;
-
+use crate::{
+    math::Bounds,
+    math::{Vec2, PI},
+    world::Transform,
+};
 #[derive(Clone)]
 pub struct Circle {
     pub radius: f32,
@@ -9,11 +10,9 @@ pub struct Circle {
 
 impl Circle {
     pub fn new(radius: f32) -> Circle {
-        Circle {
-            radius
-        }
+        Circle { radius }
     }
-    
+
     pub fn into_shape(self) -> super::Shape {
         super::Shape::Circle(self)
     }
@@ -23,14 +22,14 @@ impl super::Matter for Circle {
     fn mass_and_inertia(&self, density: f32) -> (f32, f32) {
         let mass = density * PI * self.radius * self.radius;
         let inertia = 0.5 * mass * self.radius * self.radius;
-        
+
         (mass, inertia)
     }
-    
+
     fn bounds(&self, transform: Option<&Transform>) -> Bounds {
         let center = transform.map_or(Vec2::ZERO, |t| t.position);
         let extents = Vec2::ONE * self.radius;
-        
+
         Bounds::center_extents(center, extents)
     }
 }

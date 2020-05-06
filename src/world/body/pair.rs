@@ -1,5 +1,5 @@
 use super::{Body, BodyId};
-use world::Bodies;
+use crate::world::Bodies;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub struct BodyPair(pub BodyId, pub BodyId);
@@ -24,14 +24,20 @@ impl BodyPair {
     }
 
     pub fn with<F, R>(&self, bodies: &Bodies, mut f: F) -> R
-        where F: FnMut(&Body, &Body) -> R {
+    where
+        F: FnMut(&Body, &Body) -> R,
+    {
         let (body_a, body_b) = self.as_ref(bodies);
 
         f(body_a, body_b)
     }
 
+    // TODO[unused]
+    #[allow(dead_code)]
     pub fn with_mut<F, R>(&self, bodies: &mut Bodies, mut f: F) -> R
-        where F: FnMut(&mut Body, &mut Body) -> R {
+    where
+        F: FnMut(&mut Body, &mut Body) -> R,
+    {
         let (body_a, body_b) = self.as_mut(bodies);
 
         f(body_a, body_b)

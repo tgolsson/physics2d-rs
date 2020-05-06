@@ -1,4 +1,4 @@
-use math::Vec2;
+use super::Vec2;
 
 /// A 2D bounding volume in space.
 ///
@@ -18,12 +18,9 @@ pub struct Bounds {
 impl Bounds {
     /// Creates a new `Bounds` from the given minimum and maximum corner points.
     pub fn new(min: Vec2, max: Vec2) -> Bounds {
-        Bounds {
-            min,
-            max,
-        }
+        Bounds { min, max }
     }
-    
+
     /// Creates a new `Bounds` with the given center and extents. `min` and `max` of the
     /// created bounding volume are `center - extents` and `center + extents` respectively.
     ///
@@ -57,7 +54,6 @@ impl Bounds {
         0.5 * (self.max + self.min)
     }
 
-
     /// Returns the vector from the center to the farthest point (`max`) of the bounding volume.
     #[inline]
     pub fn extents(&self) -> Vec2 {
@@ -76,13 +72,10 @@ impl Bounds {
     /// ```
     #[inline]
     pub fn intersects(&self, other: &Bounds) -> bool {
-        if self.max.x < other.min.x || self.min.x > other.max.x {
-            false
-        } else if self.max.y < other.min.y || self.min.y > other.max.y {
-            false
-        } else {
-            true
-        }
+        !(self.max.x < other.min.x
+            || self.min.x > other.max.x
+            || self.max.y < other.min.y
+            || self.min.y > other.max.y)
     }
 
     /// Checks whether this `Bounds` fully contains the other.
@@ -97,7 +90,7 @@ impl Bounds {
     /// ```
     #[inline]
     pub fn contains(&self, other: &Bounds) -> bool {
-        self.min.min(&other.min) == self.min && self.max.max(&other.max) == self.max
+        self.min.min(other.min) == self.min && self.max.max(other.max) == self.max
     }
 
     /// Returns a bounding volume that completely encompasses both the bounding volume represented
@@ -119,7 +112,7 @@ impl Bounds {
     /// assert_eq!(b3.union(&b4), union);
     /// ```
     pub fn union(&self, other: &Bounds) -> Bounds {
-        Bounds::new(self.min.min(&other.min), self.max.max(&other.max))
+        Bounds::new(self.min.min(other.min), self.max.max(other.max))
     }
 
     /// Expands the `Bounds` in all directions by a `factor`.

@@ -1,20 +1,22 @@
+#![allow(dead_code)]
+
 pub extern crate sfml;
 
-mod runner;
 mod canvas;
 mod config;
 mod input;
+mod runner;
 
-pub use self::runner::run;
 pub use self::canvas::Canvas;
 pub use self::config::Config;
 pub use self::input::{Input, Key};
+pub use self::runner::run;
 
 use physics2d::Vec2;
 
 pub trait Testbed {
     fn sfml_loop(&mut self, input: &input::Input, dt: f32);
-    
+
     fn sfml_draw(&mut self, canvas: &mut Canvas, dt: f32);
 }
 

@@ -1,33 +1,23 @@
-extern crate core;
-
-use world::{BodyId, Body, BodyPair};
-use collision::Contact;
-use constraint::Constraint;
+use crate::{
+    constraint::Constraint,
+    world::{Body, BodyId, BodyPair},
+};
 
 use fnv::FnvHashMap;
-
-use std::collections::hash_map::Values;
 use std::ops::{Index, IndexMut};
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Bodies {
     bodies: Vec<Option<Body>>,
     len: usize,
 }
 
 impl Bodies {
-    pub fn new() -> Bodies {
-        Bodies {
-            bodies: Vec::new(),
-            len: 0,
-        }
-    }
-
-    pub fn iter(&self) -> impl Iterator<Item=&Body> {
+    pub fn iter(&self) -> impl Iterator<Item = &Body> {
         self.bodies.iter().filter_map(|body| body.as_ref())
     }
 
-    pub fn iter_mut(&mut self) -> impl Iterator<Item=&mut Body> {
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut Body> {
         self.bodies.iter_mut().filter_map(|body| body.as_mut())
     }
 
@@ -61,6 +51,8 @@ impl Bodies {
         }
     }
 
+    // TODO[unused]
+    #[allow(dead_code)]
     pub fn remove(&mut self, id: BodyId) -> Option<Body> {
         self.len -= 1;
         self.bodies.remove(id)
@@ -85,20 +77,21 @@ impl IndexMut<BodyId> for Bodies {
     fn index_mut(&mut self, index: BodyId) -> &mut Self::Output {
         match self.get_mut(index) {
             Some(body) => body,
-            None => panic!("Invalid body id")
+            None => panic!("Invalid body id"),
         }
     }
 }
 
+// TODO[incorrect]
+#[allow(type_alias_bounds)]
 pub type ConstraintsMap<T: Constraint> = FnvHashMap<BodyPair, Vec<T>>;
 
-// TODO: Rename
 pub trait ConstraintSolverMap {
     fn initialize_velocity(&mut self, body_map: &Bodies, dt: f32);
-    
+
     fn warm_start_velocity(&mut self, body_map: &mut Bodies, dt: f32);
     fn warm_start_position(&mut self, body_map: &mut Bodies, dt: f32);
-    
+
     fn solve_velocity(&mut self, body_map: &mut Bodies, dt: f32);
     fn solve_position(&mut self, body_map: &mut Bodies, dt: f32);
 }
@@ -107,37 +100,37 @@ impl<T: Constraint> ConstraintSolverMap for ConstraintsMap<T> {
     fn initialize_velocity(&mut self, body_map: &Bodies, dt: f32) {
         for (body_pair, constraints) in self.iter_mut() {
             let (body_a, body_b) = body_pair.as_ref(body_map);
-            
+
             for constraint in constraints.iter_mut() {
                 constraint.initialize_velocity(body_a, body_b, dt);
             }
         }
     }
-    
+
     fn warm_start_velocity(&mut self, body_map: &mut Bodies, dt: f32) {
         for (body_pair, constraints) in self.iter_mut() {
             let (body_a, body_b) = body_pair.as_mut(body_map);
-            
+
             for constraint in constraints.iter_mut() {
                 constraint.warm_start_velocity(body_a, body_b, dt)
             }
         }
     }
-    
+
     fn warm_start_position(&mut self, body_map: &mut Bodies, dt: f32) {
         for (body_pair, constraints) in self.iter_mut() {
             let (body_a, body_b) = body_pair.as_mut(body_map);
-            
+
             for constraint in constraints.iter_mut() {
                 constraint.warm_start_position(body_a, body_b, dt)
             }
         }
     }
-    
+
     fn solve_velocity(&mut self, body_map: &mut Bodies, dt: f32) {
         for (body_pair, constraints) in self.iter_mut() {
             let (body_a, body_b) = body_pair.as_mut(body_map);
-            
+
             for constraint in constraints.iter_mut() {
                 constraint.solve_velocity(body_a, body_b, dt)
             }
@@ -146,7 +139,7 @@ impl<T: Constraint> ConstraintSolverMap for ConstraintsMap<T> {
     fn solve_position(&mut self, body_map: &mut Bodies, dt: f32) {
         for (body_pair, constraints) in self.iter_mut() {
             let (body_a, body_b) = body_pair.as_mut(body_map);
-            
+
             for constraint in constraints.iter_mut() {
                 constraint.solve_position(body_a, body_b, dt)
             }
