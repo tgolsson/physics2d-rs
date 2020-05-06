@@ -67,12 +67,12 @@ impl World {
         self.joints.get_mut(&bodies)
     }
 
-    pub fn get_body(&self, body_id: BodyId) -> &Body {
-        &self.bodies[body_id]
+    pub fn get_body(&self, body_id: BodyId) -> Option<&Body> {
+        self.bodies.get(body_id)
     }
 
-    pub fn get_body_mut(&mut self, body_id: BodyId) -> &mut Body {
-        self.bodies.get_mut(body_id).unwrap()
+    pub fn get_body_mut(&mut self, body_id: BodyId) -> Option<&mut Body> {
+        self.bodies.get_mut(body_id)
     }
 
     pub fn bodies_iter(&self) -> impl Iterator<Item = &Body> {
